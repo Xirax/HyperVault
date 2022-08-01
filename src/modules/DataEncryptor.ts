@@ -18,12 +18,6 @@ export default class DataEncryptor{
     private static hashPassword(pass: string){
         let hash = '';
         // Here is password hashing code to make encoding stronger and I want to keep it secret ;)
-        for(let i=0; i<pass.length; i++){
-            let ascii = pass.charCodeAt(i);
-            ascii += Math.ceil(Math.pow(ascii, Math.floor(ascii / 2) - 1) / 3) % 150;
-            if(ascii  > 32 && ascii < 127) hash += String.fromCharCode(ascii);
-            else hash += ascii;
-        }
 
         return hash;
     }
