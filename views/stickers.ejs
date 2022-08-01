@@ -1,0 +1,38 @@
+<div id="stickers">
+    <% if(stickers != undefined) { %>
+
+        <% stickers.forEach(st => { %>
+
+            <% if(selectedSticker && st.ID == selectedSticker.ID) { %>
+                <div id="<%= st.ID %>" class="sticker selected">
+            <% } else { %>
+                <div id="<%= st.ID %>" class="sticker">
+            <% } %>
+                <div class="element-header" onclick="toggleStickerSelection('<%= st.ID %>')" oncontextmenu="fastCopyToClipboard('<%= st.value %>')">
+                    <p id="sticker-name"> <%= st.name %> </p>
+                    <p id="sticker-value" style="display: none;"> <%= st.value %> </p>
+                </div>
+                <div class="element-bottom-line">
+                    <p> <%= st.creationDate %> </p>
+                    <div class="rating-dot"></div>
+                </div>
+            </div>
+    
+        <% }) %>
+    <% } %>
+</div>
+
+<script>
+
+    function toggleStickerSelection(ID){
+        ServerCommunication.toggleStickerSelection({ID: ID});
+    }
+
+
+    async function fastCopyToClipboard(val){
+        await navigator.clipboard.writeText(val);
+        PopupBox.show("Copied to clipboard", '#a6a6a6', 2000);
+    }
+
+</script>
+

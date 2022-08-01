@@ -1,0 +1,72 @@
+<div id="app">
+    
+    <div id="menu">
+        <div class="menu-button" onclick="goBack()"> <img class="menu-icon" src="/imgs/tools/back.png" /> <p class="menu-text"> Back </p> </div>
+    </div>
+
+    <div class="auto-close-settings">
+
+        <div class="row">
+            <label> Active: </label>
+            <input id="autoclose-active" class="auto-input" type="checkbox" checked="<%= active %>" />
+        </div>
+
+        <div class="row">
+            <label> Hours: </label>
+            <input id="autoclose-H" class="auto-input" type="number" value="<%= closeTime %>" />
+        </div>
+
+        <div class="row">
+            <label> Minutes: </label>
+            <input id="autoclose-M" class="auto-input" type="number" value="<%= closeTime %>" />
+        </div>
+
+        <div class="row">    
+            <label> Seconds: </label>
+            <input id="autoclose-S" class="auto-input" type="number" value="<%= closeTime %>" />
+        </div>
+    
+        <button class="lightButton" onclick="saveAutoCloseSettings()"> Save settings </button>
+    </div>
+
+
+
+</div>
+
+<script>
+
+    refactorCloseTime();
+
+    function refactorCloseTime(){
+        let S = document.getElementById('autoclose-S').value;
+        let H = Math.floor(S / 3600);
+        S -= H * 3600;
+        let M = Math.floor(S / 60);
+        S -= M * 60;
+
+        document.getElementById('autoclose-H').value = H;
+        document.getElementById('autoclose-M').value = M;
+        document.getElementById('autoclose-S').value = S;
+    }
+
+    function saveAutoCloseSettings(){
+        let active = document.getElementById('autoclose-active').checked;
+        let H = parseInt(document.getElementById('autoclose-H').value);
+        let M = parseInt(document.getElementById('autoclose-M').value);
+        let S = parseInt(document.getElementById('autoclose-S').value);
+
+        S += M * 60 + H * 3600;
+
+        if(S < 15) S = 15;
+
+        ServerCommunication.changeAutoCloseSettings({
+            active: active,
+            time: S
+        })
+    }
+
+    function goBack(){
+        window.location.href = '/';
+    }
+
+</script>

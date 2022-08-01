@@ -1,0 +1,266 @@
+
+<% if(container != undefined) { %>
+
+    <div id="info">
+        <div id="container-info">
+
+            <div class="info-line"> 
+                <h1 class="info-title"> Container Details </h1>  
+                
+                <% if(container.locked) { %>
+                    <img class="big-icon" src="/imgs/lock/white_lock.png" />
+                <% } else { %>
+                    <img class="big-icon" src="/imgs/tools/delete.png" onclick="deleteVault()"/>
+                <% } %>
+            </div>
+            
+            <div class="info-line">
+                <% if(container.locked) { %>
+                    <p class="info-text"> Name: <%= container.name %> </p>
+                <% } else { %>
+                    <p class="info-text"> Name: <input id="container-name-info" class="lightInput" type="text" value="<%= container.name %>" disabled="true" />  </p>
+                    <img id="container-name-edit-icon" class="small-icon" src="/imgs/tools/edit.png"  onclick="enableConEdition()" />
+                <% } %>
+            </div>
+
+            <div class="info-line">
+                <p class="info-text"> Last open time: <%= container.lastOpenTime %> </p>
+            </div>
+
+            <% if(container.locked) { %>
+                <div class="form-area">
+                    <input id="unlock-password-input" class="lightInput" type="password" placeholder="Provide password to unlock" />
+                    <button class="lightButton" onclick="unlockContainer()"> UNLOCK </button>
+                </div>
+            <% } else { %>
+                <div class="info-line">
+                    <p class="info-text"> Stored passwords: <%= container.storedPasswordsCount %> </p>
+                </div>
+                <div id="change-password-box" class="form-area">
+                    <input id="old-password-input" class="lightInput" type="password" placeholder="Old password" />
+                    <input id="new-password-input" class="lightInput" type="password" placeholder="New password" />
+                    <input id="retype-password-input" class="lightInput" type="password" placeholder="Retype password"/>
+                    <button class="lightButton" onclick="changePassword()"> Change </button>
+                </div>
+
+                <div id="buttons-box" class="form-area">
+                    <button class="lightButton" onclick="changePasswordBox()"> Change password </button>
+                    <button class="lightButton" onclick="lockContainer()"> Lock </button>
+                </div>
+
+                <textarea id="hidden-data"> <%= container.lastOpenTimeDate %> </textarea>
+        
+            <% } %>
+
+        </div>
+
+        <% if(selectedSticker){ %>
+            <div id="sticker-info">
+
+                <div class="info-line"> 
+                    <h1 class="info-title"> Sticker Details </h1>  
+                    <img class="big-icon" src="/imgs/tools/delete.png" onclick="deleteSticker()" />
+                </div>
+                
+                <div class="info-line">
+                    <p class="info-text"> Name: <input id="sticker-name-info" class="darkInput" type="text" value="<%= selectedSticker.name %>" disabled="true" />  </p>
+                    <img id="sticker-name-edit-icon" class="small-icon" src="/imgs/tools/edit.png"  onclick="enableStickerEdition()" />
+                </div>
+
+                <div class="info-line">
+                    <p class="info-text"> Value: <input id="sticker-value-info" class="darkInput" type="password" value="<%= selectedSticker.value %>" disabled="true" /> </p>
+                    <img id="sticker-visibility-icon" class="small-icon" src="/imgs/tools/eyeINV.png" onclick="valueVisibilityToggle()"/>
+                    <img id="1" class="small-icon" src="/imgs/tools/clipboard.png" onclick="copyToClipboard('<%= selectedSticker.value %>')" />
+                    <img id="sticker-value-icon" class="small-icon" src="/imgs/tools/edit.png" onclick="enableValueEdition()" />
+                    <img id="sticker-value-icon" class="small-icon" src="/imgs/tools/reload.png" onclick="generateAutoPassword()" />
+                </div>
+
+                <div class="info-line">
+                    <p id="rating" class="info-text"> Rating: NOT AVAIL </p>
+                </div>
+    
+                <div class="info-line">
+                    <p class="info-text"> Last changed date: <%= selectedSticker.creationDate %> </p>
+                    <div class="rating-dot"></div>
+                </div>
+
+                <div class="info-line">
+                    <p class="info-text"> Notes </p>
+                </div>
+                <textarea id="notes-area" onChange="updateNotes()">
+                    <%= selectedSticker.notes %>
+                </textarea>
+            </div>
+        <% } %>
+  
+    </div>
+
+<% } %>
+
+
+<script>
+    document.getElementById('change-password-box').style.display = 'none';
+    
+    calculateRating();
+    calculatePassedTime()
+
+    document.getElementById('container-name-info').addEventListener('keypress', (ev) => {
+        if(ev.key == 'Enter') disableConEdition();
+    })
+
+    document.getElementById('sticker-name-info').addEventListener('keypress', (ev) => {
+        if(ev.key == 'Enter') disableStickerEdition();
+    })
+
+    document.getElementById('sticker-value-info').addEventListener('keypress', (ev) => {
+        if(ev.key == 'Enter') disableValueEdition();
+    })
+
+    function enableConEdition(){
+        let input = document.getElementById('container-name-info');
+        let icon = document.getElementById('container-name-edit-icon');
+        icon.onclick = disableConEdition;
+
+        toggleEdition(input, icon);
+    }
+
+    function disableConEdition(){
+        let input = document.getElementById('container-name-info');
+        let icon = document.getElementById('container-name-edit-icon');
+        let value = input.value;
+        icon.onclick = enableConEdition;
+        ServerCommunication.changeContainerName({ name: value });
+
+        toggleEdition(input, icon);
+    }
+
+    function enableStickerEdition(){
+        let input = document.getElementById('sticker-name-info');
+        let icon = document.getElementById('sticker-name-edit-icon');
+        icon.onclick = disableStickerEdition;
+
+        toggleEdition(input, icon);
+    }
+
+    function disableStickerEdition(){
+        let input = document.getElementById('sticker-name-info');
+        let icon = document.getElementById('sticker-name-edit-icon');
+        let value = input.value;
+        icon.onclick = enableConEdition;
+        ServerCommunication.changeStickerName({ name: value });
+
+        toggleEdition(input, icon);
+    }
+
+    function enableValueEdition(){
+        let input = document.getElementById('sticker-value-info');
+        let icon = document.getElementById('sticker-value-icon');
+        icon.onclick = disableValueEdition;
+
+        toggleEdition(input, icon);
+    }
+
+    function disableValueEdition(){
+        let input = document.getElementById('sticker-value-info');
+        let icon = document.getElementById('sticker-value-icon');
+        let value = input.value;
+        icon.onclick = enableValueEdition;
+        ServerCommunication.changeStickerValue({ value: value });
+
+        toggleEdition(input, icon);
+        calculateRating();
+    }
+
+    function valueVisibilityToggle(forceOn = false){
+        let input = document.getElementById('sticker-value-info');
+        let icon = document.getElementById('sticker-visibility-icon');
+        
+        if(input.type == 'password' || forceOn){
+            input.type = 'text';
+            icon.src = '/imgs/tools/eyeV.png'
+        }
+        else{
+            input.type = 'password';
+            icon.src = '/imgs/tools/eyeINV.png'
+        }     
+    }
+
+    function toggleEdition(input, icon){
+        if(!input.disabled){
+            input.disabled = true;
+            icon.src = '/imgs/tools/edit.png';
+        }
+        else{
+            input.disabled = false;
+            input.focus();
+            input.select();
+            icon.src = '/imgs/tools/okMark.png';
+        }
+    }
+
+    function updateNotes(){
+        let notes = document.getElementById('notes-area').value;
+        ServerCommunication.updateNotes({notes: notes});
+    }
+
+    async function copyToClipboard(val){ 
+        await navigator.clipboard.writeText(val);
+        PopupBox.show("Copied to clipboard", '#a6a6a6', 800);
+    }
+
+    function lockContainer(){
+        ServerCommunication.lockContainer();
+    }
+
+    function unlockContainer(){
+        let password = document.getElementById('unlock-password-input').value;
+        ServerCommunication.unlockContainer({password: password});
+    }
+
+    function deleteVault(){
+        ServerCommunication.deleteVault();
+    }
+
+    function changePasswordBox(){
+        document.getElementById('buttons-box').style.display = 'none';
+        document.getElementById('change-password-box').style.display = 'flex';
+    }
+
+    async function changePassword(){
+        await ServerCommunication.changeVaultPassword({
+            oldPassword: document.getElementById('old-password-input').value,
+            newPassword: document.getElementById('new-password-input').value,
+            retypePassword: document.getElementById('retype-password-input').value
+        })
+
+        document.getElementById('buttons-box').style.display = 'flex';
+        document.getElementById('change-password-box').style.display = 'none';
+    }
+
+    function deleteSticker(){
+        ServerCommunication.deleteSelectedSticker();
+    }
+
+    async function generateAutoPassword(){
+        ServerCommunication.generateAutoPassword();
+    }
+
+    function calculateRating(){
+        try{
+            let pass = document.getElementById('sticker-value-info').value;
+            let rating = Ratings.ratePassword(pass);
+            document.getElementById('rating').innerText = "Rating: " + rating[0];
+            document.getElementById('rating').style.color = rating[1];
+        }catch(err){}
+    }
+
+    function calculatePassedTime(){
+        let date = document.getElementById('hidden-data').innerText;
+        date = new Date(date);
+        let color = Ratings.rateDate(date);
+        let dots = document.getElementsByClassName('rating-dot');
+        for(let i=0; i<dots.length; i++) dots[i].style.backgroundColor = color;
+    }
+
+
+</script>

@@ -1,0 +1,122 @@
+
+input{
+    border: none;
+
+    border-radius: 8px;
+    text-align: center;
+
+    width: 210px;
+    height: 28px;
+
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+button{
+    border: 2px solid white;
+    width: 210px;
+    height: 34px;
+    border-radius: 8px;
+}
+
+.lightButton{
+    background-color: var(--secondaryLightColor);
+    color: var(--inputTextColor);
+}
+
+.lightButton:hover{
+    background-color: white;
+    color: var(--secondaryInputTextColor);
+}
+
+.lightInput{
+    background-color: var(--secondaryLightColor);
+    color: var(--inputTextColor);
+}
+
+.darkInput{
+    background-color: var(--primaryColor);
+    color: var(--secondaryInputTextColor);
+}
+
+#info{
+    flex: 2;
+    height: 100%;
+
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+
+    margin-left: 6px;
+    margin-right: 6px;
+}
+
+#container-info{
+    width: 85%;
+    height: 45%;
+
+    background-color: var(--secondaryColor);
+    border-radius: 12px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 26px;
+
+    color: var(--textColor);
+}
+
+#sticker-info{
+    width: 85%;
+    height: 45%;
+
+    background-color: var(--primaryLightColor);
+    border-radius: 12px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 26px;
+
+    color: var(--textColor);
+
+    margin-top: 25px;
+}
+
+.info-title{
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.info-text{
+    font-size: 18;
+    margin-left: 26px;
+}
+
+.info-line{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    box-sizing: border-box;
+
+    margin-bottom: 12px;
+}
+
+#notes-area{
+    width: 95%;
+    height: 210px;
+
+    background-color: var(--primaryColor);
+    border-radius: 12px;
+
+    color: var(--secondaryTextColor);
+
+    resize: none;
+}

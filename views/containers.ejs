@@ -1,0 +1,39 @@
+<div id="containers">
+
+    <% if(containers != undefined) { %>
+        <% containers.forEach(con => { %>
+            
+            <% if(con.ID == selectedID) { %>
+            <div class="container selected">
+            <% }else { %>
+            <div class="container">
+            <% } %>
+                <div class="element-header" onclick="toggleContainerSelection('<%= con.ID %>')">
+
+                    <p> <%= con.name %> </p>
+
+                    <% if(con.locked) { %>
+                        <img class="medium-icon" src="/imgs/lock/white_lock.png" />
+                    <% }else{ %>
+                        <img class="medium-icon" src="/imgs/lock/white_unlock.png" onclick="lockPopup()" /> 
+                    <%  } %>
+
+                </div>
+
+                <div class="element-bottom-line">
+                    <p> <%= con.lastOpenTime %> </p>
+                </div>
+            </div>
+
+        <% }); %>
+    <% } %>
+    
+</div>
+
+<script>
+
+    function toggleContainerSelection(ID){
+        ServerCommunication.toggleContainerSelection({ID: ID});
+    }
+
+</script>

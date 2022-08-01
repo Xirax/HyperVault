@@ -1,0 +1,23 @@
+<div id="app">
+
+    <div id="popupFrame">
+        <div id="popupBox">
+            <p id="popupMessage"></p>
+        </div>
+    </div>
+
+    <%- include("menu.ejs") %>
+    <%- include("passwordFrame.ejs") %>
+    <% if(selectedCon) { %>
+        <%- include('containers.ejs', {containers: containers, selectedID: selectedCon.ID}) %>
+        <%- include('stickers.ejs', {stickers: stickers, selectedID: selectedSticker }) %>
+    <% } else { %>
+        <%- include('containers.ejs', {containers: containers, selectedID: '-' }) %>
+    <% } %>
+    <% if(selectedCon) { %>
+        <%- include('info.ejs', {container: selectedCon, selectedSticker: selectedSticker}) %>
+    <% } %>
+    
+</div>
+
+
